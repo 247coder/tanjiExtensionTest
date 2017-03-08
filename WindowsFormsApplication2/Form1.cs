@@ -9,7 +9,7 @@ namespace WindowsFormsApplication2
     public partial class Form1 : ExtensionForm
     {
         public override bool IsRemoteModule { get; } = true;
-
+        
         private ushort _move_furni_header;
 
         private KeyboardHook hook = new KeyboardHook();
@@ -23,14 +23,14 @@ namespace WindowsFormsApplication2
             Triggers.OutAttach(1987, clickedOnAHabbo);
 
             // i intercept all the "click on tile" headers
-            Triggers.OutAttach(2255, clickedOnATile);
+            //Triggers.OutAttach(2255, clickedOnATile);
 
             _move_furni_header = Game.GetHeader("1101e72b4882377d9dc313cfa46d6d3d");
 
             hook.KeyDown += new KeyboardHook.KeyboardHookCallback(thisMethodGetsFiredOnKeyDown);
             hook.Install();
         }
-
+        
         private void clickedOnATile(DataInterceptedEventArgs obj)
         {
             if (checkBox1.Checked)
@@ -49,9 +49,10 @@ namespace WindowsFormsApplication2
             }
         }
 
+        private int clicked_habbo_id;
         private void clickedOnAHabbo(DataInterceptedEventArgs obj)
         {
-            int clicked_habbo_id = obj.Packet.ReadInteger();
+            clicked_habbo_id = obj.Packet.ReadInteger();
             
             Invoke(new MethodInvoker(delegate ()
             {
@@ -63,7 +64,7 @@ namespace WindowsFormsApplication2
         {
             if (key == KeyboardHook.VKeys.KEY_1)
             {
-                Connection.SendToServerAsync(3182, 43427677);
+                Connection.SendToServerAsync(3182, clicked_habbo_id);
             }
         }
 
